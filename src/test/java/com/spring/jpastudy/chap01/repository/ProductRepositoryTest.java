@@ -16,8 +16,8 @@ import static com.spring.jpastudy.chap01.entity.Product.Category.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-//@Transactional
-//@Rollback
+@Transactional
+@Rollback
 class ProductRepositoryTest {
 
     @Autowired
