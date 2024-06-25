@@ -2,6 +2,8 @@ package com.spring.jpastudy.chap02.repository;
 
 import com.spring.jpastudy.chap02.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +30,16 @@ public interface StudentRepository extends JpaRepository<Student, String> {
 
 //    // where age <= ?
 //    List<Student> findByAgeLessThanEqual(int age);
+
+
+    // native sql 사용하기 = 순수 sql쓰기
+    @Query(value = "SELECT * FROM tbl_student WHERE stu_name = :snm OR city = :city", nativeQuery = true)
+    List<Student> getStudentByNameOrCity(@Param("snm") String name, @Param("city") String city); //이름은 아무거나 써도 됨.
+
+
+    // native sql 사용하기 = 순수 sql쓰기
+    @Query(value = "SELECT * FROM tbl_student WHERE stu_name = :?1 OR :city = ?2", nativeQuery = true)
+    List<Student> getStudentByNameOrCity2(String name, String city); //이름은 아무거나 써도 됨.
 
 
 }
