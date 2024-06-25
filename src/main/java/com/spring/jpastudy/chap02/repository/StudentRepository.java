@@ -11,4 +11,23 @@ public interface StudentRepository extends JpaRepository<Student, String> {
     // 쿼리메서드 : 메서드 이름에 특별한 규칙을 적용하면 SQL이 규칙에 맞게 생성된다.
     List<Student> findByName(String name);  //카멜케이스 적용해야 함. findBy + 어쩌구(stu_name쓰면 안됨)
     // Optional findByName(String name); => 단일조회
+
+    // 도시로 찾고싶다면
+    List<Student> findByCity(String city);
+
+    //도시와 전공이름이 매칭되게 찾고싶다면 (And)
+    List<Student> findByCityAndMajor(String city, String major);
+
+    // where major like '%major%'
+    List<Student> findByMajorContaining(String major);
+    // where major like 'major%'
+    List<Student> findByMajorStartingWith(String major);
+    // where major like '%major'
+    List<Student> findByMajorEndingWith(String major);
+
+
+//    // where age <= ?
+//    List<Student> findByAgeLessThanEqual(int age);
+
+
 }

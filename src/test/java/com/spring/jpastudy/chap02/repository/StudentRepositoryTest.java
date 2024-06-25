@@ -74,5 +74,33 @@ class StudentRepositoryTest {
 
     }
 
+    @Test
+    @DisplayName("도시이름과 전공으로 학생 조회")
+    void findByCityAndMajorTest() {
+        //given
+            String city = "제주도";
+            String major = "화학공학";
+
+        //when
+        List<Student> students = studentRepository.findByCityAndMajor(city, major);
+
+        //then
+        System.out.println("\n\n\n\n");
+        System.out.println("students" + students);
+        System.out.println("\n\n\n\n");
+    }
+
+    @Test
+    @DisplayName("전공이 공학으로 끝나는 학생들 조회")
+    void findByMajorContainingTest() {
+        //given
+        String majorContaining = "공학";
+        //when
+        List<Student> students = studentRepository.findByMajorContaining(majorContaining);
+        //then
+        System.out.println("\n\n\n\n");
+        System.out.println("students" + students);
+        System.out.println("\n\n\n\n");
+    }
 
 }
