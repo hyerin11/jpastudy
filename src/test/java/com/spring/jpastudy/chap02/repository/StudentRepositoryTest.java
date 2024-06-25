@@ -9,11 +9,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-//@Transactional
-//@Rollback
+@Transactional
+@Rollback
 class StudentRepositoryTest {
 
     @Autowired
@@ -46,12 +48,30 @@ class StudentRepositoryTest {
 
     @Test
     @DisplayName("")
-    void dumyTest() {
+    void dummyTest() {
         //given
 
         //when
 
         //then
+    }
+
+    @Test
+    @DisplayName("이름이 춘식이인 학생의 모든 정보를 조회한다")
+    void findByNameTest() {
+        //given
+        String name = "춘식이";
+
+        //when
+        List<Student> students = studentRepository.findByName(name);
+
+        //then
+        assertEquals(1, students.size());
+
+        System.out.println("\n\n\n\n");
+        System.out.println("students.get(0) = " + students.get(0));
+        System.out.println("\n\n\n\n");
+
     }
 
 
