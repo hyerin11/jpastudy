@@ -1,6 +1,5 @@
 package com.spring.jpastudy.chap01.repository;
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.spring.jpastudy.chap01.entity.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,12 +10,14 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.List;
+
 import static com.spring.jpastudy.chap01.entity.Product.Category.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Transactional
-@Rollback
+//@Transactional
+//@Rollback
 class ProductRepositoryTest {
 
     @Autowired
@@ -94,6 +95,44 @@ class ProductRepositoryTest {
         //then
         assertEquals("구두", foundProduct.getName());
         System.out.println("\n\n\nfoundProduct = " + foundProduct + "\n\n\n");
+    }
+
+
+    @Test
+    @DisplayName("상품을 전제조회하면 상품의 총 갯수는 4개이다.")
+    void findAllTest() {
+        //given
+
+        //when
+        List<Product> productList = productRepository.findAll();
+        //then
+        System.out.println("\n\n\n");
+        productList.forEach(System.out::println);
+        System.out.println("\n\n\n");
+        assertEquals(4, productList.size());
+    }
+
+    @Test
+    @DisplayName("2번 상품의 이름과 카테고리를 수정한다")
+    void modifyTest() {
+        //given
+        Long id = 2L;
+        String newName = "청소기";
+        Product.Category newCategory = ELECTRONIC;
+        //when
+        /*
+        * jpa에서는 수정메서드를 따로 제공하지 않는다.
+        * 단일 조회를 수행한 후 setter를 통해 값을 변경하고
+        * 다시 save를 하면 INSERT 대신에 UPDATE문이 실행된다.
+        * */
+        Product product = productRepository.findById(id).orElse(null);
+        product.setName(newName);
+        product.setCategory(newCategory);
+
+        Product saved = productRepository.save(product);
+
+        //then
+        assertEquals(newName, saved.getName());
     }
 
 }

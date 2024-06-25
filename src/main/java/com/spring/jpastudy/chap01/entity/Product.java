@@ -24,12 +24,14 @@ public class Product {
     @Column(name = "prod_id") //컬럼명도 바꿔줄 수 있다
     private Long id; //PK
 
+    @Setter
     @Column(name = "prod_nm", length = 30, nullable = false) //not null
     private String name; //상품명
 
     @Column(name = "price")
     private int price; //상품가격
 
+    @Setter
     @Column(nullable = false)
     @Enumerated(EnumType.STRING) //  => 이늄의 기본값이 ordinarl(순서가 있는)이다.
     private Category category; //상품 카테고리
