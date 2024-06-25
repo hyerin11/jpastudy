@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
-@ToString
+@ToString(exclude = "nickName") //닉네임은 제외해줘. 여러개 안보려면 {"nickName", "price}
 @EqualsAndHashCode (of = "id") //id(필드명)만 가지고 판단해라
 @NoArgsConstructor
 @AllArgsConstructor
