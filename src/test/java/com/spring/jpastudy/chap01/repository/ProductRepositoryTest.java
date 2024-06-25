@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Transactional
-@Rollback
+//@Transactional
+//@Rollback
 class ProductRepositoryTest {
 
     @Autowired
@@ -25,8 +25,8 @@ class ProductRepositoryTest {
         //given
         Product product = Product.builder()
                 .name("신발")
-                .price(99000)
-                .category(Product.Category.FASHION)
+//                .price(99000)
+//                .category(Product.Category.FASHION)
                 .build();
         //when
         //insert 후 저장된 데이터의 객체를 반환한다
