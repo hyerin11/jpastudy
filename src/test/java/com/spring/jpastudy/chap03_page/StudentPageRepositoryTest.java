@@ -78,7 +78,13 @@ class StudentPageRepositoryTest {
                 0,
                 10,
                 //매개값으로는 엔터티 필드명을 써야한다.
-                Sort.by("name").descending()//내림차순
+                //Sort.by("name").descending()//내림차순 정렬
+
+                //여러 조건으로 정렬
+                Sort.by(
+                        Sort.Order.desc("name"),
+                        Sort.Order.asc("city")
+                )
         );
         //when
         Page<Student> studentPage = repository.findAll(pageInfo);
