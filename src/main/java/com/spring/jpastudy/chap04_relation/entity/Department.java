@@ -36,12 +36,23 @@ public class Department {
      */
 
     //employee에 manytoOne에 department라고 지정함.
-    @OneToMany(mappedBy = "department") //= 상대방은 나를 뭐라고 맵핑했니?
+    @OneToMany(mappedBy = "department", orphanRemoval = true, cascade = CascadeType.ALL) //= 상대방은 나를 뭐라고 맵핑했니?
+                                            //고아객체 removal을 true로 해준다
     //여기서 OneToMany는 LAZY로 되어있음. (조인안함)
     private List<Employee> employees = new ArrayList<>();
 
     //@OneToMany는 기본 LAZY임.
     //@ManytoOne는 EAGER라 LAZY로 바꿔줘야 하고
     //ToString에서 꼭 빼줘야 함.
+
+    public void removeEmployee(Employee employee) {
+        this.employees.remove(employee);
+        employee.setDepartment(null);
+    }
+
+    public void addEmployee(Employee employee){
+        this.employees.add(employee); //추가했으면
+        employee.setDepartment(this); //반대쪽도 추가
+    }
 
 }

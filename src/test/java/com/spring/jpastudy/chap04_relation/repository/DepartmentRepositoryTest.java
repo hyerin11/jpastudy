@@ -83,4 +83,51 @@ class DepartmentRepositoryTest {
         * */
     }
 
+
+    @Test
+    @DisplayName("고아 객체 삭제하기")
+    void orphanRemovalTest() {
+        //given
+        // 1번 부서 조회
+        Department department = departmentRepository.findById(1L).orElseThrow();
+        //Object department;
+        // 1번 부서 사원 목록 가져오기
+        List<Employee> employeeList = department.getEmployees();
+        // 2번 사원 조회
+        //Employee employee = employeeRepository.findById(2L).orElseThrow();
+        Employee employee = employeeList.get(1);
+
+        //when
+        // 1번 부서 사원 목록 가져오기
+//        employeeList.remove(employee);
+//        employee.setDepartment(null); //🌟🙊
+
+        department.removeEmployee(employee);
+
+        // 갱신반영을 위해 다시 save?
+        //departmentRepository.save(department); //아직 안지워짐..
+        //+Department.java에 가서 orphanRemoval = true로 바꿔줌 .  = 그래도 안지워짐
+        // ++ 얘도 똑같이(부모가 자식을 버리면, 자식도 부모를 버려줘야 함)
+
+
+        //then
+    }
+
+    @Test
+    @DisplayName("양방향관계에서 리스트에 데이터를 추가하면 DB에도 INSERT된다")
+    void cascadePersistTest() {
+        //given
+        //2번 부서 조회
+        Department department = departmentRepository.findById(2L).orElseThrow();
+        //새로운 사원 생성
+        Employee employee = Employee.builder()
+                .name("뽀로로")
+                .build();
+
+        //when
+        department.addEmployee(employee);
+
+        //then
+    }
+
 }
