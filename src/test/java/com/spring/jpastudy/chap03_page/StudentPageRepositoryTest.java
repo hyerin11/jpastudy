@@ -79,6 +79,7 @@ class StudentPageRepositoryTest {
                 10,
                 //매개값으로는 엔터티 필드명을 써야한다.
                 //Sort.by("name").descending()//내림차순 정렬
+                //오름차순 ascending (기본)
 
                 //여러 조건으로 정렬
                 Sort.by(
