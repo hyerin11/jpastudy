@@ -162,4 +162,17 @@ class StudentRepositoryTest {
         System.out.println("\n\n\n");
     }
 
+
+    @Test
+    @DisplayName("JPQL로 삭제하기")
+    void deleteJPQLTest() { //롤백=false 함
+        //given
+        String name = "어피치";
+        String city = "제주도";
+        //when
+        studentRepository.deleteByNameAndCityWithJPQL(name, city);
+        //then
+        assertEquals(0, studentRepository.findByName(name).size());
+    }
+
 }
