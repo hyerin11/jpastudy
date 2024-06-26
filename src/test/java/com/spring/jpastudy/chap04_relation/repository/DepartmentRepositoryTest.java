@@ -56,9 +56,13 @@ class DepartmentRepositoryTest {
 
         //when
         // 사원정보를 수정한다
-        employee.setDepartment(department);
-        //핵심!!!! 양방향에서는 수정 시 반대편에도 같이 수정해줘야 한다🌟🌟🌟
-        department.getEmployees().add(employee);
+//        employee.setDepartment(department);
+//        //핵심!!!! 양방향에서는 수정 시 반대편에도 같이 수정해줘야 한다🌟🌟🌟
+//        department.getEmployees().add(employee);
+
+        //양쪽 바꾸는거 까먹으니까
+        employee.changeDepartment(department);
+
         employeeRepository.save(employee); //다시 save하면 수정됨.
 
 

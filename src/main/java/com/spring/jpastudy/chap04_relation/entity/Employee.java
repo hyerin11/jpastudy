@@ -30,6 +30,11 @@ public class Employee {
     @JoinColumn(name = "dept_id")  // FK 컬럼명
     private Department department;
 
+    public void changeDepartment(Department department) {
+        this.department = department;
+        department.getEmployees().add(this); //잊지않고 반대쪽 바꿔주기!
+    }
+
 //    @ManyToOne
 //    @JoinColumn(name = "receive_dept_id")
 //    private Department department2;
