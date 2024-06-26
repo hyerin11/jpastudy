@@ -92,6 +92,11 @@ class EmployeeRepositoryTest {
         System.out.println("employee = " + employee);
         System.out.println("\n\n\n");
 
+        Department department = employee.getDepartment();
+        System.out.println("\n\n\n");
+        System.out.println("department = " + department);
+        System.out.println("\n\n\n");
+
     }
 
 }
