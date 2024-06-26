@@ -62,6 +62,9 @@ public interface StudentRepository extends JpaRepository<Student, String> {
     Optional<Student> getByCityWithJPQL(String city);
     // 단일조회는 결과가 null이 나올 수 있기 때문에 Optional로 감싸줌
 
+    //특정 이름이 포함된 학생 리스트 조회하기
+    @Query("SELECT stu FROM Student stu WHERE stu.name LIKE %?1%")
+    List<Student> searchByNameWithJPQL(String name);
 
 }
 

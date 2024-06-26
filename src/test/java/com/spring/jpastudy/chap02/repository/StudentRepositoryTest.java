@@ -14,8 +14,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Transactional
-@Rollback
+@Transactional //🌟🌟🌟  주석처리 하지 않기
+@Rollback(false) // 주석처리 하지 않고 @Rollback(false)라고 하기
 class StudentRepositoryTest {
 
     @Autowired
@@ -146,6 +146,20 @@ class StudentRepositoryTest {
         assertNotNull(student);
         System.out.println("\n\n\nstudent = " + student + "\n\n\n");
         //assertThrows(RuntimeException.class, () -> new RuntimeException()); // 이런 에러가 날 수 있다는 테스트
+    }
+
+
+    @Test
+    @DisplayName("JPQL로 이름이 포함된 학생목록 조회하기")
+    void jpqlTest2() {
+        //given
+        String containingName = "춘";
+        //when
+        List<Student> students = studentRepository.searchByNameWithJPQL(containingName);
+        //then
+        System.out.println("\n\n\n");
+        students.forEach(System.out::println);
+        System.out.println("\n\n\n");
     }
 
 }
