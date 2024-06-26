@@ -42,4 +42,40 @@ public interface StudentRepository extends JpaRepository<Student, String> {
     List<Student> getStudentByNameOrCity2(String name, String city); //이름은 아무거나 써도 됨.
 
 
+    /*
+        - JPQL
+
+        SELECT 엔터티별칭
+        FROM 엔터티클래스명 AS 엔터티별칭
+        WHERE 별칭.필드명
+
+        ex) native - SELECT * FROM tbl_student WHERE stu_name = ?
+            JPQL   - SELECT st FROM Student AS st WHERE st.name = ?
+
+          * native               * JPQL
+            FROM + 테이블명   >>>   FROM + 클래스명
+
+     */
+
+    // 도시명으로 학생 1명 단일조회
+    @Query(value = "SELECT st FROM Student AS st WHERE st.city = ?1") //as는 생략 가능
+    Optional<Student> getByCityWithJPQL(String city);
+    // 단일조회는 결과가 null이 나올 수 있기 때문에 Optional로 감싸줌
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

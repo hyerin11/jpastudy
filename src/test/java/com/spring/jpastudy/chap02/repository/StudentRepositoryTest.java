@@ -132,4 +132,20 @@ class StudentRepositoryTest {
         System.out.println("\n\n\n\n");
     }
 
+
+
+    @Test
+    @DisplayName("JPQL로 학생 조회하기")
+    void jpqlTest() {
+        //given
+        String city = "제주도";
+        //when
+        Student student = studentRepository.getByCityWithJPQL(city)
+                .orElseThrow(() -> new RuntimeException("해당 학생이 없습니다."));
+        //then
+        assertNotNull(student);
+        System.out.println("\n\n\nstudent = " + student + "\n\n\n");
+        //assertThrows(RuntimeException.class, () -> new RuntimeException()); // 이런 에러가 날 수 있다는 테스트
+    }
+
 }
