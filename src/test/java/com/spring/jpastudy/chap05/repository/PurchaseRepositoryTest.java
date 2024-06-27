@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.swing.text.html.parser.Entity;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -82,6 +84,34 @@ class PurchaseRepositoryTest {
         assertEquals(goods1.getId(), foundPurchase.getGoods().getId());
     }
 
+    @Test
+    @DisplayName("특정 유저의 구매 목록을 조회한다.")
+    void findPurchaseListTest() {
+        //given
+        Purchase purchase1 = Purchase.builder()
+                .user(user1).goods(goods1).build();
+        Purchase purchase2 = Purchase.builder()
+                .user(user1).goods(goods3).build();
+        //when
+        purchaseRepository.save(purchase1);
+        purchaseRepository.save(purchase2);
+
+        em.flush();
+        em.clear();
+
+        //then
+        User user = userRepository.findById(user1.getId()).orElseThrow();
+        List<Purchase> purchases = user.getPurchaseList();
+
+        for (Purchase p : purchases) {
+            System.out.printf("\n\n%s 님이 구매한 물품명 : %s\n\n",
+                    user.getName(), p.getGoods().getName());
+        }
+
+        assertEquals(2, purchases.size());
+        assertTrue(purchases.stream().anyMatch(p -> p.getGoods().equals(goods1)));
+        assertTrue(purchases.stream().anyMatch(p -> p.getGoods().equals(goods3)));
+    }
 
 
 }
