@@ -33,11 +33,27 @@ public class Department {
            (리스트에서 사원을 지운다고 실제 디비에서 사원이 삭제되지는 않는다는 말)
            🌟단순히 읽기전용 (조회전용)으로만 사용하는 것이다.
         - mappedBy에는 상대방 엔터티에 @ManyToOne에 대응되는 필드명을 꼭 적어야 함🌟
+
+
+        -Cascade Type
+        * PERSIST : 부모 갱신되면 자식도 같이 갱신된다.
+        -> 부모의 리스트에 자식을 추가하거나 제거하면 데이터베이스에도 반영된다.
+
+        * REMOVE : 부모가 제거되면 자식도 같이 갱신된다.(자식 제거되면 부모 제거X 제거해줘야 함.)
+        -> 부모를 제거하면
+        ON DELETE CASECADE
+
+        * ALL : 위의 내용 전부 포함
+        -> 그냥 ALL 넣는게 좋음
+
+
      */
 
     //employee에 manytoOne에 department라고 지정함.
-    @OneToMany(mappedBy = "department", orphanRemoval = true, cascade = CascadeType.ALL) //= 상대방은 나를 뭐라고 맵핑했니?
-                                            //고아객체 removal을 true로 해준다
+    @OneToMany(mappedBy = "department", //= 상대방은 나를 뭐라고 맵핑했니?
+            orphanRemoval = true, //고아객체 removal을 true로 해준다
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+
     //여기서 OneToMany는 LAZY로 되어있음. (조인안함)
     private List<Employee> employees = new ArrayList<>();
 

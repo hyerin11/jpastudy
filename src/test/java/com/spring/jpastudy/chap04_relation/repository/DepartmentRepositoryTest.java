@@ -130,4 +130,19 @@ class DepartmentRepositoryTest {
         //then
     }
 
+
+    @Test
+    @DisplayName("부서가 사라지면 해당 사원들도 사라진다")
+    void cascadeRemoveTest() {
+        //given
+        Department department = departmentRepository.findById(2L).orElseThrow();
+        //when
+        // departmentRepository.deleteById(department.getId());
+        departmentRepository.delete(department); //자동으로 찾아서 삭제함
+        // 사원 순차적 삭제 후 부모(팀) 삭제함
+        //then
+    }
+
+
+
 }
