@@ -114,4 +114,103 @@ class PurchaseRepositoryTest {
     }
 
 
+    @Test
+    @DisplayName("특정 상품을 구매한 유저목록을 조회한다.")
+    void findUserByGoodsTest() {
+        //given
+        Purchase purchase1 = Purchase.builder()
+                .user(user2).goods(goods1).build();
+        Purchase purchase2 = Purchase.builder()
+                .user(user3).goods(goods1).build();
+
+        purchaseRepository.save(purchase1);
+        purchaseRepository.save(purchase2);
+
+        em.flush();
+        em.clear();
+
+        //when
+        Goods goods = goodsRepository.findById(goods1.getId()).orElseThrow();
+        List<Purchase> purchases = goods.getPurchaseList();
+
+        //then
+        for (Purchase p : purchases) {
+            System.out.printf("\n\n%s 상품을 구매한 유저명 : %s\n\n",
+                    goods.getName(), p.getUser().getName());
+        }
+        assertEquals(2, purchases.size());
+        assertTrue(purchases.stream().anyMatch(p -> p.getUser().equals(goods2)));
+        assertTrue(purchases.stream().anyMatch(p -> p.getUser().equals(goods3)));
+    }
+
+    @Test
+    @DisplayName("구매기록 삭제 테스트")
+    void deletePurchaseTest() {
+        //given
+        Purchase purchase = Purchase.builder()
+                .user(user1).goods(goods1).build();
+
+        Purchase savedPurchase = purchaseRepository.save(purchase);
+
+        em.flush();
+        em.clear();
+
+        //when
+        purchaseRepository.delete(savedPurchase);
+
+        em.flush();
+        em.clear();
+
+        //then
+        Purchase foundPurchase
+                = purchaseRepository.findById(purchase.getId()).orElse(null);
+        assertNull(foundPurchase);
+    }
+
+
+
+    @Test
+    @DisplayName("회원이 탈퇴하면 구매기록이 삭제되어야 한다")
+    void cascadeRemoveTest() {
+        //given
+        Purchase purchase1 = Purchase.builder()
+                .user(user1).goods(goods2).build();
+
+        Purchase purchase2 = Purchase.builder()
+                .user(user1).goods(goods3).build();
+
+        Purchase purchase3 = Purchase.builder()
+                .user(user2).goods(goods1).build();
+
+        purchaseRepository.save(purchase1);
+        purchaseRepository.save(purchase2);
+        purchaseRepository.save(purchase3);
+
+        em.flush();
+        em.clear();
+
+        User user = userRepository.findById(user1.getId()).orElseThrow();
+        List<Purchase> purchases = user.getPurchaseList();
+
+        System.out.println("\n\nuser1's purchases = " + purchases + "\n\n");
+        System.out.println("\n\nall of purchases = " + purchaseRepository.findAll() + "\n\n");
+
+        userRepository.delete(user);
+
+        em.flush();
+        em.clear();
+        //when
+
+        List<Purchase> purchaseList = purchaseRepository.findAll();
+
+        System.out.println("\n\nafter removing purchaseList = " + purchaseList + "\n\n");
+
+        //then
+        assertEquals(1, purchaseList.size());
+    }
+
+
+
+
+
 }
