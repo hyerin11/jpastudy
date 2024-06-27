@@ -51,6 +51,7 @@ public class Department {
 
     //employee에 manytoOne에 department라고 지정함.
     @OneToMany(mappedBy = "department", //= 상대방은 나를 뭐라고 맵핑했니?
+            fetch = FetchType.LAZY,
             orphanRemoval = true, //고아객체 removal을 true로 해준다
             cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
 
