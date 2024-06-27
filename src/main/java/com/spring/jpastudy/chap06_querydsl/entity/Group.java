@@ -10,8 +10,8 @@ import java.util.List;
 @Setter @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(exclude = {"idols"})
-@Table(name = "tbl_group")
 @EqualsAndHashCode(of = "id")
+@Table(name = "tbl_group")
 public class Group {
 
     @Id

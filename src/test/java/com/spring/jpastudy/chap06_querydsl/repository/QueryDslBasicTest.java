@@ -1,6 +1,8 @@
 package com.spring.jpastudy.chap06_querydsl.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.spring.jpastudy.chap04_relation.entity.QDepartment;
+import com.spring.jpastudy.chap04_relation.entity.QEmployee;
 import com.spring.jpastudy.chap06_querydsl.entity.Group;
 import com.spring.jpastudy.chap06_querydsl.entity.Idol;
 import com.spring.jpastudy.chap06_querydsl.entity.QIdol;
@@ -9,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -18,22 +21,26 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-//@Rollback(value = false)
+//@Rollback(false)
 class QueryDslBasicTest {
 
     @Autowired
     IdolRepository idolRepository;
 
-    // 제어하기 위해
     @Autowired
     GroupRepository groupRepository;
 
-    //JPA 의 CRUD 를 제어하느 객체
+    // JPA의 CRUD를 제어하는 객체
     @Autowired
     EntityManager em;
 
+    @Autowired
+    JPAQueryFactory factory;
+
+
     @BeforeEach
-    void setUp(){
+    void setUp() {
+
         //given
         Group leSserafim = new Group("르세라핌");
         Group ive = new Group("아이브");
@@ -55,14 +62,16 @@ class QueryDslBasicTest {
 
 
     @Test
-    @DisplayName("JPQL 로 특정이름의 아이돌 조회하기 ")
+    @DisplayName("JPQL로 특정이름의 아이돌 조회하기")
     void jpqlTest() {
         //given
         String jpqlQuery = "SELECT i FROM Idol i WHERE i.idolName = ?1";
+
         //when
         Idol foundIdol = em.createQuery(jpqlQuery, Idol.class)
                 .setParameter(1, "가을")
                 .getSingleResult();
+
         //then
         assertEquals("아이브", foundIdol.getGroup().getGroupName());
 
@@ -77,30 +86,23 @@ class QueryDslBasicTest {
     @DisplayName("QueryDsl로 특정 이름의 아이돌 조회하기")
     void queryDslTest() {
         //given
-        //QueryDsl로 JPQL을 만드는 빌더
-        JPAQueryFactory factory = new JPAQueryFactory(em);
+        // QueryDsl로 JPQL을 만드는 빌더
+//        JPAQueryFactory factory = new JPAQueryFactory(em);
         //when
         Idol foundIdol = factory
                 .select(idol)
                 .from(idol)
-                .where(idol.idolName.eq("가을"))
+                .where(idol.idolName.eq("사쿠라"))
                 .fetchOne();
 
         //then
-        assertEquals("아이브", foundIdol.getGroup().getGroupName());
+        assertEquals("르세라핌", foundIdol.getGroup().getGroupName());
 
         System.out.println("\n\n\n\n");
         System.out.println("foundIdol = " + foundIdol);
         System.out.println("foundIdol.getGroup() = " + foundIdol.getGroup());
         System.out.println("\n\n\n\n");
-
     }
-
-
-
-
-
-
 
 
 }

@@ -1,6 +1,5 @@
 package com.spring.jpastudy.chap06_querydsl.repository;
 
-import com.spring.jpastudy.chap06_querydsl.entity.Group;
 import com.spring.jpastudy.chap06_querydsl.entity.Idol;
 import org.springframework.data.jpa.repository.JpaRepository;
 

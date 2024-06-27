@@ -34,7 +34,6 @@ public class Idol {
         }
     }
 
-
     public void changeGroup(Group group) {
         this.group = group;
         group.getIdols().add(this);
