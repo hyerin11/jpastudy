@@ -79,6 +79,30 @@ class QueryDslSortTest {
     }
 
 
+    @Test
+    @DisplayName("페이징 처리하기")
+    void pagingTest() {
+        //given
+        int pageNo = 1;
+        int amount = 2;
+
+        //when
+        List<Idol> pagedIdols = factory
+                .selectFrom(idol)
+                .orderBy(idol.age.desc()) // 나이로 정렬
+//                .offset(2) //2명씩이니까 2면 페이지, 다음 페이지 보려면 4
+//                .limit(2) //1페이지에 2개씩 (0,2)
+                .offset((pageNo-1)*amount)
+                .limit(amount)
+                .fetch();
+
+
+        //then
+        System.out.println("\n\n\n");
+        pagedIdols.forEach(System.out::println);
+        System.out.println("\n\n\n");
+
+    }
 
 
 
