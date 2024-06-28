@@ -161,6 +161,37 @@ class QueryDslGroupingTest {
 
 
 
+    @DisplayName("그룹별 평균 나이 조회")
+    @Test
+    void groupAverageAgeTest() {
+
+        /*
+            SELECT G.group_name, AVG(I.age)
+            FROM tbl_idol I
+            JOIN tbl_group G
+            ON I.group_id = G.group_id
+            GROUP BY G.group_id
+            HAVING AVG(I.age) BETWEEN 20 AND 25
+         */
+
+        List<Tuple> result = factory
+                .select(idol.group.groupName, idol.age.avg())
+                .from(idol)
+                .groupBy(idol.group)
+                .having(idol.age.avg().between(20, 25))
+                .fetch();
+
+        //then
+        assertFalse(result.isEmpty());
+        for (Tuple tuple : result) {
+            String groupName = tuple.get(idol.group.groupName);
+            double averageAge = tuple.get(idol.age.avg());
+
+            System.out.println("\n\nGroup: " + groupName
+                    + ", Average Age: " + averageAge);
+        }
+    }
+
 
 
 
