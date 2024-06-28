@@ -1,9 +1,11 @@
 package com.spring.jpastudy.chap06_querydsl.repository;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.spring.jpastudy.chap06_querydsl.dto.GroupAverageAgeDto;
 import com.spring.jpastudy.chap06_querydsl.entity.Group;
 import com.spring.jpastudy.chap06_querydsl.entity.Idol;
 import com.spring.jpastudy.chap06_querydsl.entity.QIdol;
@@ -186,6 +188,44 @@ class QueryDslGroupingTest {
         for (Tuple tuple : result) {
             String groupName = tuple.get(idol.group.groupName);
             double averageAge = tuple.get(idol.age.avg());
+
+            System.out.println("\n\nGroup: " + groupName
+                    + ", Average Age: " + averageAge);
+        }
+    }
+
+
+    @DisplayName("그룹별 평균 나이 조회(결과 DRO처리)")
+    @Test
+    void groupAverageAgeDto() {
+
+        /*
+            SELECT G.group_name, AVG(I.age)
+            FROM tbl_idol I
+            JOIN tbl_group G
+            ON I.group_id = G.group_id
+            GROUP BY G.group_id
+            HAVING AVG(I.age) BETWEEN 20 AND 25
+         */
+        //Projection: 커스텀 DTO를 포장해주는 객체
+        List<GroupAverageAgeDto> result = factory
+                .select(
+                        Projections.constructor(
+                                GroupAverageAgeDto.class,
+                                idol.group.groupName,
+                                idol.age.avg()
+                        )
+                )
+                .from(idol)
+                .groupBy(idol.group)
+                .having(idol.age.avg().between(20, 25))
+                .fetch();
+
+        //then
+        assertFalse(result.isEmpty());
+        for (GroupAverageAgeDto dto : result) {
+            String groupName = dto.getGroupName();
+            double averageAge = dto.getAverageAge();
 
             System.out.println("\n\nGroup: " + groupName
                     + ", Average Age: " + averageAge);
