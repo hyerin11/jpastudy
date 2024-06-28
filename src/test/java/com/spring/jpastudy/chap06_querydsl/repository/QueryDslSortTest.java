@@ -112,7 +112,74 @@ class QueryDslSortTest {
 
     }
 
-    //
+    //아이돌을 이름 기준으로 오름차순으로 정렬하여 조회하세요.
+    @Test
+    @DisplayName("아이돌 이름 기준 오름차순으로 정렬하기")
+    void sortingByName() {
+        //given
+
+        //when
+        List<Idol> sortedIdolName = factory
+                .selectFrom(idol)
+                .orderBy(idol.idolName.asc())
+                .fetch();
+        //then
+        assertFalse(sortedIdolName.isEmpty());
+
+        System.out.println("\n\n\n");
+        sortedIdolName.forEach(System.out::println);
+        System.out.println("\n\n\n");
+
+    }
+
+
+    //아이돌을 나이 기준으로 내림차순 정렬하고, 페이지당 3명씩 페이징 처리하여 1번째 페이지의 아이돌을 조회하세요.
+    @Test
+    @DisplayName("나이 기준 내림차 정렬하여 3명씩 페이징 처리해 1번째 페이지 조회")
+    void pagingByNameTest() {
+
+        //when
+        List<Idol> pagedIdols = factory
+                .selectFrom(idol)
+                .orderBy(idol.age.desc()) // 나이로 정렬
+                .offset(0)
+                .limit(3)
+                .fetch();
+
+        //then
+        System.out.println("\n\n\n");
+        pagedIdols.forEach(System.out::println);
+        System.out.println("\n\n\n");
+
+
+    }
+
+    //"아이브" 그룹의 아이돌을 이름 기준으로 오름차순 정렬하고, 페이지당 2명씩 페이징 처리하여 첫 번째 페이지의 아이돌을 조회하세요.
+    @Test
+    @DisplayName("아이브 그룹 아이돌을 오름차순으로 정렬 후, 2명씩 페이징 처리해 첫 번쨰 페이지 아이돌 조회")
+    void pagingIveByName() {
+
+        // given
+        String groupName = "아이브";
+
+        //when
+        List<Idol> pagedIve = factory
+                .selectFrom(idol)
+                .where(idol.group.groupName.eq(groupName))
+                .orderBy(idol.idolName.asc()) // 나이로 정렬
+                .offset(0) //2명씩이니까 2면 페이지, 다음 페이지 보려면 4
+                .limit(2) //1페이지에 2개씩 (0,2)
+                .fetch();
+
+
+        //then
+        System.out.println("\n\n\n");
+        pagedIve.forEach(System.out::println);
+        System.out.println("\n\n\n");
+
+
+    }
+
 
 
 
