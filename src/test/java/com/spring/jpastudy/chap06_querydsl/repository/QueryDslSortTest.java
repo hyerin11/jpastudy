@@ -96,11 +96,19 @@ class QueryDslSortTest {
                 .limit(amount)
                 .fetch();
 
+        // 총 데이터 수
+        Long totalCount = factory
+                .select(idol.count())
+                .from(idol)
+                .fetchOne()
+                ;
 
         //then
         System.out.println("\n\n\n");
         pagedIdols.forEach(System.out::println);
         System.out.println("\n\n\n");
+        System.out.println("\ntotalCount = " + totalCount);
+       assertTrue(totalCount==5);
 
     }
 
