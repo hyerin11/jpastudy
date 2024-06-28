@@ -85,13 +85,26 @@ class QueryDslGroupingTest {
         GROUP BY G.group_id, I.gender
         * */
         List<Tuple> idolList = factory
-                .select(idol.gender, idol.count())
+                .select(idol.group, idol.gender, idol.count())
                 .from(idol)
                 .groupBy(idol.gender, idol.group)
                 .having(idol.count().loe(3))
                 .fetch();
         //then
         System.out.println("\n\n");
+
+        for(Tuple tuple : idolList){
+            //System.out.println("tuple = " + tuple);
+            Group group = tuple.get(idol.group);
+            String gender = tuple.get(idol.gender);
+            Long count = tuple.get(idol.count());
+
+            System.out.println(
+                    String.format("\n그룹명 : %s, 성별: %s, 인원수: %d\n"
+                            , group.getGroupName(), gender, count)
+            );
+        }
+
         System.out.println("idolList = " + idolList);
         System.out.println("\n\n");
     }
