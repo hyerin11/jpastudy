@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 
+import static com.spring.jpastudy.chap06_querydsl.entity.QGroup.group;
+import static com.spring.jpastudy.chap06_querydsl.entity.QIdol.idol;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SpringBootTest
@@ -88,22 +90,45 @@ class QueryDslJoinTest {
 
         //when
         List<Tuple> idolList = factory
-                .select(QIdol.idol, QIdol.idol.group)
-                .from(QIdol.idol)
+                .select(idol, idol.group)
+                .from(idol)
                 //.innerJoin(QGroup.group)//on절 안쓰고 파라미터 2개를 넣어줌
                 // 첫 번째 파라미터는 from절에 있는 엔터티의 연관 객체
                 // 두 번째 파라미터는 실제로 조인할 엔터티
-                .innerJoin(QIdol.idol.group, QGroup.group)
+                .innerJoin(idol.group, group)
                 .fetch();
         //then
         System.out.println("\n\n");
         for (Tuple tuple : idolList) {
-            Idol foundIdol = tuple.get(QIdol.idol);
-            Group foundGroup = tuple.get(QGroup.group);
+            Idol foundIdol = tuple.get(idol);
+            Group foundGroup = tuple.get(group);
             System.out.println(foundIdol);
             System.out.println(foundGroup);
         }
         System.out.println("\n\n");
+    }
+
+
+    @Test
+    @DisplayName("Left Outer Join")
+    void outerJoinTest() {
+        //given
+
+        //when
+        List<Tuple> result = factory
+                .select(idol, group)
+                .from(idol)
+                .leftJoin(idol.group, group)
+                .fetch();
+
+        //then
+        assertFalse(result.isEmpty());
+        for (Tuple tuple : result) {
+            Idol i = tuple.get(idol);
+            Group g = tuple.get(group);
+
+            System.out.println("\nIdol: " + i.getIdolName() + ", Group: " + (g != null ? g.getGroupName() : "솔로가수"));
+        }
     }
 
 
