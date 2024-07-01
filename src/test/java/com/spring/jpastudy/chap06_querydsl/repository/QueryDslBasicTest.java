@@ -256,25 +256,7 @@ class QueryDslBasicTest {
     }
 
 
-    @Test
-    @DisplayName("르세라핌 그룹에 속한 아이돌 조회")
-    void testGroupEquals() {
-        // given
-        String groupName = "르세라핌";
 
-        // when
-        List<Idol> result = factory
-                .selectFrom(idol)
-                .where(idol.group.groupName.eq(groupName))
-                .fetch();
-
-        // then
-        assertFalse(result.isEmpty());
-        for (Idol idol : result) {
-            System.out.println("Idol: " + idol);
-            assertEquals(groupName, idol.getGroup().getGroupName());
-        }
-    }
 
 
 }

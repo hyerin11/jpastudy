@@ -6,10 +6,7 @@ import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.spring.jpastudy.chap06_querydsl.dto.GroupAverageAgeDto;
-import com.spring.jpastudy.chap06_querydsl.entity.Group;
-import com.spring.jpastudy.chap06_querydsl.entity.Idol;
-import com.spring.jpastudy.chap06_querydsl.entity.QGroup;
-import com.spring.jpastudy.chap06_querydsl.entity.QIdol;
+import com.spring.jpastudy.chap06_querydsl.entity.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,8 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 
-import static com.spring.jpastudy.chap06_querydsl.entity.QGroup.group;
-import static com.spring.jpastudy.chap06_querydsl.entity.QIdol.idol;
+import static com.spring.jpastudy.chap06_querydsl.entity.QAlbum.*;
+import static com.spring.jpastudy.chap06_querydsl.entity.QGroup.*;
+import static com.spring.jpastudy.chap06_querydsl.entity.QIdol.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SpringBootTest
@@ -34,6 +32,9 @@ class QueryDslJoinTest {
 
     @Autowired
     GroupRepository groupRepository;
+
+    @Autowired
+    AlbumRepository albumRepository;
 
     @Autowired
     JPAQueryFactory factory;
@@ -80,6 +81,23 @@ class QueryDslJoinTest {
         idolRepository.save(idol11);
         idolRepository.save(idol12);
         idolRepository.save(idol13);
+
+
+        Album album1 = new Album("MAP OF THE SOUL 7", 2020, bts);
+        Album album2 = new Album("FEARLESS", 2022, leSserafim);
+        Album album3 = new Album("UNFORGIVEN", 2023, bts);
+        Album album4 = new Album("ELEVEN", 2021, ive);
+        Album album5 = new Album("LOVE DIVE", 2022, ive);
+        Album album6 = new Album("OMG", 2023, newjeans);
+
+        albumRepository.save(album1);
+        albumRepository.save(album2);
+        albumRepository.save(album3);
+        albumRepository.save(album4);
+        albumRepository.save(album5);
+        albumRepository.save(album6);
+
+
     }
 
 
@@ -90,13 +108,13 @@ class QueryDslJoinTest {
 
         //when
         List<Tuple> idolList = factory
-                .select(idol, idol.group)
+                .select(idol, group)
                 .from(idol)
-                //.innerJoin(QGroup.group)//on절 안쓰고 파라미터 2개를 넣어줌
-                // 첫 번째 파라미터는 from절에 있는 엔터티의 연관 객체
-                // 두 번째 파라미터는 실제로 조인할 엔터티
+                // 첫번째 파라미터는 from절에 있는 엔터티의 연관 객체
+                // 두번째 파라미터는 실제로 조인할 엔터티
                 .innerJoin(idol.group, group)
                 .fetch();
+
         //then
         System.out.println("\n\n");
         for (Tuple tuple : idolList) {
@@ -127,8 +145,86 @@ class QueryDslJoinTest {
             Idol i = tuple.get(idol);
             Group g = tuple.get(group);
 
-            System.out.println("\nIdol: " + i.getIdolName() + ", Group: " + (g != null ? g.getGroupName() : "솔로가수"));
+            System.out.println("\nIdol: " + i.getIdolName()
+                    + ", Group: "
+                    + (g != null ? g.getGroupName() : "솔로가수"));
         }
+    }
+
+
+    @Test
+    @DisplayName("특정 그룹에 속한 아이돌의 정보 조회")
+    void pratice1Test() {
+        //given
+        String groupName = "아이브";
+        //when
+        List<Tuple> result = factory
+                .select(idol, group)
+                .from(idol)
+                .innerJoin(idol.group, group)
+                .where(group.groupName.eq(groupName))
+                .fetch();
+
+        //then
+        assertFalse(result.isEmpty());
+        result.forEach(tuple -> {
+            Idol foundIdol = tuple.get(idol);
+            Group foundGroup = tuple.get(group);
+            System.out.printf("\n# 이름: %s, 그룹명: %s\n\n"
+                    , foundIdol.getIdolName(), foundGroup.getGroupName());
+        });
+    }
+
+
+    @Test
+    @DisplayName("그룹별 평균 나이 계산")
+    void practice2Test() {
+        //given
+
+        //when
+        List<Tuple> result = factory
+                .select(group.groupName, idol.age.avg())
+                .from(idol)
+                .innerJoin(idol.group, group)
+                .groupBy(group.id)
+                .having(idol.age.avg().goe(22))
+                .fetch();
+
+        //then
+        assertFalse(result.isEmpty());
+        result.forEach(tuple -> {
+            String groupName = tuple.get(group.groupName);
+            double averageAge = tuple.get(idol.age.avg());
+            System.out.printf("\n# 그룹명: %s, 평균나이: %.2f\n\n"
+                    , groupName, averageAge);
+        });
+    }
+
+
+    @Test
+    @DisplayName("특정 연도에 발매된 앨범의 아이돌 정보 조회")
+    void practice3Test() {
+        //given
+        int year = 2022;
+        //when
+        List<Tuple> result = factory
+                .select(idol, album)
+                .from(idol)
+                .innerJoin(idol.group, group)
+                .innerJoin(group.albums, album)
+                .where(album.releaseYear.eq(year))
+                .fetch();
+
+        //then
+        assertFalse(result.isEmpty());
+        result.forEach(tuple -> {
+            Idol foundIdol = tuple.get(idol);
+            Album foundAlbum = tuple.get(album);
+            System.out.printf("\n# 아이돌명: %s, 그룹명: %s, " +
+                            "앨범명: %s, 발매연도: %d년\n\n"
+                    ,foundIdol.getIdolName(), foundIdol.getGroup().getGroupName()
+                    , foundAlbum.getAlbumName(), foundAlbum.getReleaseYear());
+        });
     }
 
 
